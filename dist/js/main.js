@@ -218,7 +218,8 @@ function buildPopupContent(feature) {
     for (var i = 0; i < propertyNames.length; i++) {
         subcontent = subcontent.concat('<p><strong>' + normalizeName(propertyNames[i]) + ': </strong>' + feature.properties[propertyNames[i]] + '</p>')
     }
-    return subcontent
+    return subcontent;
+
 }
 
 function getData(queryUrl) {
