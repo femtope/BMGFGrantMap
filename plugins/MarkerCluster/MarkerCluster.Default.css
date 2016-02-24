@@ -1,0 +1,38 @@
+.marker-cluster-small {
+background-color: rgba(255, 167, 140, 1.0);
+}
+.marker-cluster-small div {
+background-color: rgba(255, 255, 224, 1.2);
+}
+
+.marker-cluster-medium {
+background-color: rgba(255, 167, 140, 1.0);
+}
+.marker-cluster-medium div {
+background-color: rgba(255, 255, 224, 1.2);
+}
+
+.marker-cluster-large {
+background-color: rgba(255, 167, 140, 1.0);
+}
+.marker-cluster-large div {
+background-color: rgba(255, 255, 224, 1.2);
+}
+
+.marker-cluster {
+background-clip: padding-box;
+border-radius: 25px;
+}
+.marker-cluster div {
+width: 30px;
+height: 30px;
+margin-left: 5px;
+margin-top: 5px;
+
+text-align: center;
+border-radius: 15px;
+font: bold 16px "Agency FB", Arial, Helvetica, sans-serif;
+}
+.marker-cluster span {
+line-height: 30px;
+}
