@@ -230,6 +230,8 @@ function getData(queryUrl) {
         addDataToMap(data)
     }).done(function() {
       $('.fa-spinner').hide()
+    }).fail(function () {
+      console.log("error!")
     }) ;
 }
 
