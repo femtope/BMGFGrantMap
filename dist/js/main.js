@@ -5,6 +5,8 @@ var scope = '',
     markerGroup = null,
     stateData = null;
 
+
+
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 });
@@ -56,6 +58,12 @@ new L.Control.Zoom({
     position: 'topright'
 }).addTo(map);
 
+L.control.scale({
+  position: 'bottomright',
+  maxWidth: 150,
+  metric: true,
+  updateWhenIdle: true
+}).addTo(map);
 
 
 function triggerUiUpdate() {
@@ -103,7 +111,7 @@ function buildQuery(_scope, _sectors) {
             else query = query.concat(" OR sector='" + _sectors[i] + "'")
         }
     }
-  console.log("Query ", query)
+  //console.log("Query ", query)
     return query;
 }
 
@@ -193,8 +201,10 @@ function addDataToMap(geoData) {
         onEachFeature: function (feature, layer) {
             if (feature.properties && feature.properties.cartodb_id) {
                 layer.bindPopup(buildPopupContent(feature));
-            }
+              }
+
         }
+
     })
 
     markerGroup.addLayer(dataLayer);
@@ -217,10 +227,11 @@ function buildPopupContent(feature) {
     var propertyNames = ['sector', 'state', 'scope_of_work', 'duration', 'bmgf_point', 'grantee_organisation', 'beneficiary', 'title_of_grant', 'nature_of_work', 'focal_state', 'organisation']
     for (var i = 0; i < propertyNames.length; i++) {
         subcontent = subcontent.concat('<p><strong>' + normalizeName(propertyNames[i]) + ': </strong>' + feature.properties[propertyNames[i]] + '</p>')
+
     }
     return subcontent;
+ }
 
-}
 
 function getData(queryUrl) {
     $('.fa-spinner').addClass('fa-spin')
