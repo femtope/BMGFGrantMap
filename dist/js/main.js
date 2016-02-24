@@ -1,29 +1,62 @@
 var scope = '',
     sectors = [],
     geoData = null,
-    dataLayer = null;
+    dataLayer = null,
+    markerGroup = null,
+    stateData = null;
+
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+
+var style = {
+        "clickable": true,
+        "color": '#B81609',
+        "fillColor": '#FFFFFF',
+        "weight": 2.0,
+        "opacity": 0.2,
+        "fillOpacity": 0.1
+    };
+    var hoverStyle = {
+        "fillOpacity": 0.5
+    };
+
+
+$.ajax({
+  type: "POST",
+  url: "http://ehealthafrica.cartodb.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM nigeria_state_boundary",
+  dataType: 'json',
+  success: function (response) {
+    stateLayer = L.geoJson(response, {
+    style: style
+  }).addTo(map);
+  }
+});
+
 var map = L.map('map', {
     center: [10, 8],
     zoom: 8,
     zoomControl: false,
     minZoom: 6
+    //layers:[stateLayer]
 });
-/*
-xMin: 2.668432
-yMin: 4.277144
-xMax:    14.680073
-yMax:    13.892007
-*/
+
+
 map.fitBounds([
     [2.668432, 4.277144], [14.680073, 13.892007]
 ]);
-L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpandmbXliNDBjZWd2M2x6bDk3c2ZtOTkifQ._QA7i5Mpkd_m30IGElHziw', {
-    maxZoom: 18,
-    id: 'mapbox.streets'
-}).addTo(map);
+
+//https://maps.nlp.nokia.com/maptiler/v2/maptile/newest/normal.day.grey/{z}/{x}/{y}/256/png8?lg=eng&token=61YWYROufLu_f8ylE0vn0Q&app_id=qIWDkliFCtLntLma2e6O
+
+L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18
+  }).addTo(map);
+
 new L.Control.Zoom({
     position: 'topright'
 }).addTo(map);
+
+
 
 function triggerUiUpdate() {
     scope = $('#projectScope').val()
@@ -70,8 +103,10 @@ function buildQuery(_scope, _sectors) {
             else query = query.concat(" OR sector='" + _sectors[i] + "'")
         }
     }
+  console.log("Query ", query)
     return query;
 }
+
 
 
 function addDataToMap(geoData) {
@@ -79,14 +114,10 @@ function addDataToMap(geoData) {
     if (dataLayer != null)
         map.removeLayer(dataLayer)
 
-    /*    var geojsonMarkerOptions = {
-            radius: 8,
-            fillColor: "#ff7800",
-            color: "#000",
-            weight: 1,
-            opacity: 1,
-            fillOpacity: 0.8
-        };*/
+        if (markerGroup != null)
+          map.removeLayer(markerGroup)
+
+
     var _radius = 7
     var _outColor = "#fff"
     var _weight = 1
@@ -143,11 +174,21 @@ function addDataToMap(geoData) {
             fillOpacity: _fillOpacity
         }
     }
+
+
     $('#projectCount').text(geoData.features.length)
+
+    markerGroup = L.markerClusterGroup({
+      showCoverageOnHover: false,
+      zoomToBoundsOnClick: true,
+      removeOutsideVisibleBounds: true
+    })
+
     dataLayer = L.geoJson(geoData, {
         pointToLayer: function (feature, latlng) {
-            var marker = L.circleMarker(latlng, allColours[feature.properties.sector]);
-            return marker;
+            var marker = L.circleMarker(latlng, allColours[feature.properties.sector])
+            //markerGroup.addLayer(marker);
+            return marker
         },
         onEachFeature: function (feature, layer) {
             if (feature.properties && feature.properties.cartodb_id) {
@@ -156,8 +197,11 @@ function addDataToMap(geoData) {
         }
     })
 
-    dataLayer.addTo(map);
-    //layer.bindPopup('<p>GID: ' + feature.properties.cartodb_id + '</p>');
+    markerGroup.addLayer(dataLayer);
+    map.addLayer(markerGroup);
+    //map.fitBounds(markerGroup.getBounds());
+    //dataLayer.addTo(map);
+
 }
 
 function normalizeName(source) {
@@ -170,7 +214,7 @@ function normalizeName(source) {
 
 function buildPopupContent(feature) {
     var subcontent = ''
-    var propertyNames = ['sector', 'state', 'scope_of_work', 'duration', 'bmgf_point', 'amount_us', 'grantee_organisation', 'beneficiary', 'title_of_grant', 'nature_of_work', 'focal_state', 'organisation']
+    var propertyNames = ['sector', 'state', 'scope_of_work', 'duration', 'bmgf_point', 'grantee_organisation', 'beneficiary', 'title_of_grant', 'nature_of_work', 'focal_state', 'organisation']
     for (var i = 0; i < propertyNames.length; i++) {
         subcontent = subcontent.concat('<p><strong>' + normalizeName(propertyNames[i]) + ': </strong>' + feature.properties[propertyNames[i]] + '</p>')
     }
@@ -179,12 +223,13 @@ function buildPopupContent(feature) {
 
 function getData(queryUrl) {
     $('.fa-spinner').addClass('fa-spin')
+    $('.fa-spinner').show()
     $.post(queryUrl, function (data) {
         $('.fa-spinner').removeClass('fa-spin')
         addDataToMap(data)
-    }).fail(function () {
-        console.log("error!")
-    });
+    }).done(function() {
+      $('.fa-spinner').hide()
+    }) ;
 }
 
 triggerUiUpdate()

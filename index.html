@@ -26,7 +26,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="dist/css/skins/skin-blue.min.css">
 
     <link rel="stylesheet" href="plugins/leaflet/leaflet.css">
+
     <link rel="stylesheet" href="dist/css/main.css">
+
+    <link rel="stylesheet" href="plugins/MarkerCluster/MarkerCluster.css">
+    <link rel="stylesheet" href="plugins/MarkerCluster/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
 
 </head>
 
@@ -54,10 +59,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <aside class="main-sidebar main-sidebar-light sidebar_edit">
             <section class="sidebar">
                 <div class="row">
-                    <h3 class="white text-center"><i class="icon fa  fa-spinner"></i></h3>
+                    <h3 class="white text-center"><i class="icon fa fa-spinner"></i></h3>
                 </div>
                 <div class="alert alert-info sideColor">
-                    <h4><i class="icon fa fa-globe"></i>Project Scope</h4>
+                  <div class="w3-container">
+                    <div class="w3-tooltip">
+                      <p align='justify' class="w3-text">
+                            <strong> Project Scope:&nbsp;&nbsp;</strong>
+                            <small>Select your project scope which is either <b>National</b> Projects or <b>State</b> Projects. This will display all the project under this scope with several <b>"Available Sectors".</b></small>
+                            <br><br>
+                            <strong> Sector:&nbsp;&nbsp;</strong>
+                            <small>You can filter based on <b>Sectors</b>. On Clicking of each sectors displays the project with the sector attribute and the Icon turns "green", clicking again deselect the sector. There is room for multiple selection of sectors.</small>
+                      </p>
+                      <h4><i class="icon fa fa-globe"></i>Project Scope</h4>
+                    </div>
+                  </div>
+
                     <div class="form-group">
                         <select id="projectScope" onchange="buildSelectedSectors(null)" class="form-control">
                             <option value="">All</option>
@@ -89,6 +106,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </div>
 
                 </div>
+
+
+
                 <div class="row"></div>
                 <div class="alert alert-info sideColor">
                     <!--<h4><i class="icon fa  fa-info"></i> Indicators</h4>-->
@@ -162,6 +182,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </div>
             </section>
 
+          <!--  Instruction on how to use the Scope and Sector Function -->
+          <div class="row"></div>
+                <div class="alert alert-info sideColor">
+                    <h4><i class="icon fa  fa-info-circle"></i>Instruction</h4>
+                    <div class="box box-primary">
+                        <!--Buttons go here -->
+                        <div class="box-body">
+                          <!--Display the on click of the point here-->
+                        </div>
+
+                    </div>
+
+                </div>
+
 
 
         </aside>
@@ -189,10 +223,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
             </div>
             <!-- Default to the left -->
-            <strong>Copyright &copy; 2015 <a target="_blank" href="http://ehealthafrica.org">eHealth Africa</a>.</strong> All rights reserved.
+            <strong>Copyright &copy; 2015 <a href="#">eHealth Africa</a>.</strong> All rights reserved.
         </footer>
 
         <!-- jQuery 2.1.4 -->
+
+      <script src='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.js'></script>
         <script src="plugins/jQuery/jQuery-2.1.4.min.js"></script>
         <script src="plugins/slimScroll/jquery.slimscroll.js"></script>
         <!-- Bootstrap 3.3.5 -->
@@ -201,6 +237,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <script src="dist/js/app.min.js"></script>
         <script src="plugins/leaflet/leaflet.js"></script>
         <script src="dist/js/main.js"></script>
+        <script src="plugins/MarkerCluster/leaflet.markercluster-src.js"></script>
+
+  </div>
 </body>
 
 </html>
