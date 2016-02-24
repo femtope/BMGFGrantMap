@@ -227,9 +227,8 @@ function getData(queryUrl) {
     $('.fa-spinner').show()
     $.post(queryUrl, function (data) {
         $('.fa-spinner').removeClass('fa-spin')
+        $('.fa-spinner').hide()
         addDataToMap(data)
-    }).done(function() {
-      $('.fa-spinner').hide()
     }).fail(function () {
       console.log("error!")
     }) ;
