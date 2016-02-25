@@ -50,7 +50,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <!-- Navbar Right Menu -->
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-                        <!--<span><img src="resources/eha-logo-small.png" alt="eHEalth Africa Logo"/></span>-->
+
                     </ul>
                 </div>
             </nav>
@@ -62,19 +62,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <h3 class="white text-center"><i class="icon fa fa-spinner"></i></h3>
                 </div>
                 <div class="alert alert-info sideColor">
-                  <div class="w3-container">
-                    <div class="w3-tooltip">
-                      <p align='justify' class="w3-text">
-                            <strong> Project Scope:&nbsp;&nbsp;</strong>
-                            <small>Select your project scope which is either <b>National</b> Projects or <b>State</b> Projects. This will display all the project under this scope with several <b>"Available Sectors".</b></small>
-                            <br><br>
-                            <strong> Sector:&nbsp;&nbsp;</strong>
-                            <small>You can filter based on <b>Sectors</b>. On Clicking of each sectors displays the project with the sector attribute and the Icon turns "green", clicking again deselect the sector. There is room for multiple selection of sectors.</small>
-                      </p>
-                      <h4><i class="icon fa fa-globe"></i>Project Scope</h4>
-                    </div>
-                  </div>
 
+                    <!--<div class="w3-container">
+    <div class="w3-tooltip">
+        <p align='justify' class="w3-text">
+            <strong> Project Scope: </strong>
+            <small>Select your project scope which is either <b>National</b> Projects or <b>State</b> Projects. This will display all the project under this scope with several <b>"Available Sectors".</b></small>
+            <br>
+            <br>
+            <strong> Sector: </strong>
+            <small>You can filter based on <b>Sectors</b>. On Clicking of each sectors displays the project with the sector attribute and the Icon turns "green", clicking again deselect the sector. There is room for multiple selection of sectors.</small>
+        </p>
+
+    </div>
+</div>-->
+                    <h4><i class="icon fa fa-globe"></i>Project Scope</h4>
                     <div class="form-group">
                         <select id="projectScope" onchange="buildSelectedSectors(null)" class="form-control">
                             <option value="">All</option>
@@ -121,24 +123,29 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </div>
             </section>
 
-
-          <div class="row"></div>
+            <section>
+                <div class="row"></div>
                 <div class="alert alert-info sideColor">
-                    <h4><i class="icon fa  fa-info-circle"></i>Instruction</h4>
-                    <div class="box box-primary">
-                        <!-- POint Information Goes Here -->
-                        <div id="myDiv" class="box-body">
+                    <!-- <h4><i class="icon fa  fa-info-circle"></i>Info</h4>-->
+                    <div class="box box-primary box-solid">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Info</h3>
+                            <div class="box-tools pull-right">
+                                <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                            </div>
+                            <!-- /.box-tools -->
+                        </div>
+                        <!-- /.box-header -->
+                        <div id="infoContent" class="box-body black info-box">
 
                         </div>
-
+                        <!-- /.box-body -->
                     </div>
 
                 </div>
 
-
-
+            </section>
         </aside>
-
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!--<section class="content-header">hello!</section>-->
@@ -159,7 +166,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <footer class="main-footer">
             <!-- To the right -->
             <div class="pull-right hidden-xs">
-
+                <!--<span><img src="resources/eha-logo.png" alt="eHEalth Africa Logo"/></span>-->
             </div>
             <!-- Default to the left -->
             <strong>Copyright &copy; 2015 <a target="_blank" href="http://ehealthafrica.org">eHealth Africa</a>.</strong> All rights reserved.
@@ -167,7 +174,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
         <!-- jQuery 2.1.4 -->
 
-      <script src='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.js'></script>
+        <script src='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.js'></script>
         <script src="plugins/jQuery/jQuery-2.1.4.min.js"></script>
         <script src="plugins/slimScroll/jquery.slimscroll.js"></script>
         <!-- Bootstrap 3.3.5 -->
@@ -178,7 +185,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <script src="dist/js/main.js"></script>
         <script src="plugins/MarkerCluster/leaflet.markercluster-src.js"></script>
 
-  </div>
+    </div>
 </body>
 
 </html>
