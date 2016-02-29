@@ -78,3 +78,8 @@
     overflow: auto;
     font-size: 10px;
 }
+
+.label-icon {
+    color: red;
+    font-size: 10px;
+}
