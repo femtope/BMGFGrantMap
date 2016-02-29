@@ -3,45 +3,29 @@ var scope = '',
     geoData = null,
     dataLayer = null,
     markerGroup = null,
-    stateData = null;
-/*
-var style = {
-    "clickable": true,
-    "color": '#B81609',
-    "fillColor": '#FFFFFF',
-    "weight": 2.0,
-    "opacity": 0.2,
-    "fillOpacity": 0.1
-};
-var hoverStyle = {
-    "fillOpacity": 0.5
-};
-
-$.ajax({
-    type: "POST",
-    url: "http://ehealthafrica.cartodb.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM nigeria_state_boundary",
-    dataType: 'json',
-    success: function (response) {
-        stateLayer = L.geoJson(response, {
-            style: style
-        }).addTo(map);
-    }
-});*/
+    stateData = null,
+    stateLayer, lgaLayer, lgaLabels = [],
+    showLga = false
 
 var map = L.map('map', {
     center: [10, 8],
     zoom: 8,
     zoomControl: false,
     minZoom: 6
+        /*,
+        crs: L.CRS.EPSG4326*/
         //layers:[stateLayer]
 });
 
 
 map.fitBounds([
     [2.668432, 4.277144], [14.680073, 13.892007]
-]);
+])
 
-//https://maps.nlp.nokia.com/maptiler/v2/maptile/newest/normal.day.grey/{z}/{x}/{y}/256/png8?lg=eng&token=61YWYROufLu_f8ylE0vn0Q&app_id=qIWDkliFCtLntLma2e6O
+map.on('zoomend', function () {
+    adjustLayerbyZoom(map.getZoom())
+})
+
 
 L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 18
@@ -58,11 +42,32 @@ L.control.scale({
     updateWhenIdle: true
 }).addTo(map);
 
+function adjustLayerbyZoom(zoomLevel) {
+
+    if (zoomLevel > 8) {
+        if (!showLga) {
+            map.addLayer(lgaLayer)
+                //Add labels to the LGAs
+            for (var i = 0; i < lgaLabels.length; i++) {
+                lgaLabels[i].addTo(map)
+            }
+            showLga = true
+        }
+    } else {
+        map.removeLayer(lgaLayer)
+        for (var i = 0; i < lgaLabels.length; i++) {
+            map.removeLayer(lgaLabels[i])
+        }
+
+        showLga = false
+    }
+}
 
 function triggerUiUpdate() {
     scope = $('#projectScope').val()
     var query = buildQuery(scope, sectors)
     getData(query)
+    getAdminLayers()
 }
 
 function buildSelectedSectors(sector) {
@@ -78,7 +83,7 @@ function buildSelectedSectors(sector) {
 }
 
 function toggleClass(id) {
-    console.log("Selected", id)
+    /*console.log("Selected", id)*/
     if (id != null) {
         if ($('#'.concat(id)).hasClass('btn-primary')) {
             $('#'.concat(id)).removeClass('btn-primary')
@@ -110,9 +115,11 @@ function buildQuery(_scope, _sectors) {
 }
 
 
-
+//TODO: fix the issue of lga layer not reoving after data filtering
 function addDataToMap(geoData) {
+    // adjustLayerbyZoom(map.getZoom())
     //remove all layers first
+    map.removeLayer(lgaLayer)
     if (dataLayer != null)
         map.removeLayer(dataLayer)
 
@@ -181,11 +188,11 @@ function addDataToMap(geoData) {
     $('#projectCount').text(geoData.features.length)
 
     markerGroup = L.markerClusterGroup({
-        showCoverageOnHover: false,
-        zoomToBoundsOnClick: true,
-        removeOutsideVisibleBounds: true
-    })
-
+            showCoverageOnHover: false,
+            zoomToBoundsOnClick: true,
+            removeOutsideVisibleBounds: true
+        })
+        //console.log("geoData", geoData)
     dataLayer = L.geoJson(geoData, {
         pointToLayer: function (feature, latlng) {
             var marker = L.circleMarker(latlng, allColours[feature.properties.sector])
@@ -206,10 +213,88 @@ function addDataToMap(geoData) {
 
     markerGroup.addLayer(dataLayer);
     map.addLayer(markerGroup);
-    //map.fitBounds(markerGroup.getBounds());
-    //dataLayer.addTo(map);
 
 }
+
+/*
+
+var hoverStyle = {
+    "fillOpacity": 0.5
+};
+
+$.ajax({
+    type: "POST",
+    url: "http://ehealthafrica.cartodb.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM nigeria_state_boundary",
+    dataType: 'json',
+    success: function (response) {
+        stateLayer = L.geoJson(response, {
+            style: style
+        }).addTo(map);
+    }
+});*/
+
+function addAdminLayersToMap(layers) {
+    var layerStyles = {
+            'state': {
+                "clickable": true,
+                "color": '#B81609',
+                "fillColor": '#FFFFFF',
+                "weight": 1.5,
+                "opacity": 0.2,
+                "fillOpacity": 0.1
+            },
+            'lga': {
+                "clickable": true,
+                "color": '#244B54',
+                "fillColor": '#FFFFFF',
+                "weight": 1.5,
+                "opacity": 0.4,
+                "fillOpacity": 0.1
+            }
+        }
+        /*
+        pointToLayer: function (feature, latlng) {
+            var marker = L.circleMarker(latlng, allColours[feature.properties.sector])
+                //markerGroup.addLayer(marker);
+            return marker
+        }
+
+
+        console.log(layers)
+console.log(layers['state'])*/
+        //console.log("state", layers['state'])
+    stateLayer = L.geoJson(layers['state'], {
+        style: layerStyles['state']
+    }).addTo(map)
+    lgaLayer = L.geoJson(layers['lga'], {
+        style: layerStyles['lga'],
+        onEachFeature: function (feature, layer) {
+            var labelIcon = L.divIcon({
+                className: 'label-icon',
+                html: feature.properties.LGAName
+            })
+            lgaLabels.push(L.marker(layer.getBounds().getCenter(), {
+                    icon: labelIcon
+                }))
+                //layer.bindPopup(feature.properties.LGAName)
+        }
+    })
+}
+
+
+/**
+L.geoJson(geoJsonData, {
+  onEachFeature: function(feature, layer) {
+    var label = L.marker(layer.getBounds().getCenter(), {
+      icon: L.divIcon({
+        className: 'label',
+        html: feature.properties.NAME,
+        iconSize: [100, 40]
+      })
+    }).addTo(map);
+  }
+);
+*/
 
 function displayInfo(feature) {
     //console.log('displaying info..')
@@ -236,17 +321,51 @@ function buildPopupContent(feature) {
     return subcontent;
 }
 
-
-function getData(queryUrl) {
+function showLoader() {
     $('.fa-spinner').addClass('fa-spin')
     $('.fa-spinner').show()
+}
+
+function hideLoader() {
+    $('.fa-spinner').removeClass('fa-spin')
+    $('.fa-spinner').hide()
+}
+
+
+function getData(queryUrl) {
+    showLoader()
     $.post(queryUrl, function (data) {
-        $('.fa-spinner').removeClass('fa-spin')
-        $('.fa-spinner').hide()
+        hideLoader()
         addDataToMap(data)
     }).fail(function () {
         console.log("error!")
     });
 }
+
+function getAdminLayers() {
+    showLoader()
+    var adminLayers = {}
+    $.get('resources/state_boundary.geojson', function (stateData) {
+        //add admin layers to map
+        adminLayers['state'] = JSON.parse(stateData)
+        $.get('resources/lga_boundary.geojson', function (lgaData) {
+            adminLayers['lga'] = JSON.parse(lgaData)
+                //return the layers
+            addAdminLayersToMap(adminLayers)
+        }).fail(function () {
+            logError(null)
+        })
+    }).fail(function () {
+        logError(null) //TODO: Fix this terrible code
+    })
+}
+
+function logError(error) {
+    console.log("error!")
+}
+
+
+
+
 
 triggerUiUpdate()
