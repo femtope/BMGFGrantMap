@@ -4,7 +4,8 @@ var scope = '',
     dataLayer = null,
     markerGroup = null,
     stateData = null,
-    stateLayer, lgaLayer, lgaLabels = [],
+    stateLayer, lgaLayer,
+    lgaLabels = [],
     showLga = false
 
 var map = L.map('map', {
@@ -67,7 +68,6 @@ function triggerUiUpdate() {
     scope = $('#projectScope').val()
     var query = buildQuery(scope, sectors)
     getData(query)
-    getAdminLayers()
 }
 
 function buildSelectedSectors(sector) {
@@ -119,7 +119,7 @@ function buildQuery(_scope, _sectors) {
 function addDataToMap(geoData) {
     // adjustLayerbyZoom(map.getZoom())
     //remove all layers first
-    map.removeLayer(lgaLayer)
+
     if (dataLayer != null)
         map.removeLayer(dataLayer)
 
@@ -364,8 +364,5 @@ function logError(error) {
     console.log("error!")
 }
 
-
-
-
-
+getAdminLayers()
 triggerUiUpdate()
