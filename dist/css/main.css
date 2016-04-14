@@ -83,3 +83,8 @@
     color: red;
     font-size: 10px;
 }
+
+.logo_pad{
+    padding-top: 5px;
+    padding-right: 5px;
+}
